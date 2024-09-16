@@ -1,4 +1,71 @@
-import './styles/jass.css';
+const searchForm: HTMLFormElement = document.getElementById('search-form') as HTMLFormElement;
+const searchInput: HTMLInputElement = document.getElementById('search-input') as HTMLInputElement;
+const todayContainer = document.querySelector('#today') as HTMLDivElement;
+const forecastContainer = document.querySelector('#forecast') as HTMLDivElement;
+const searchHistoryContainer = document.getElementById('history') as HTMLDivElement;
+const heading: HTMLHeadingElement = document.getElementById('search-title') as HTMLHeadingElement;
+const weatherIcon: HTMLImageElement = document.getElementById('weather-img') as HTMLImageElement;
+const tempEl: HTMLParagraphElement = document.getElementById('temp') as HTMLParagraphElement;
+const windEl: HTMLParagraphElement = document.getElementById('wind') as HTMLParagraphElement;
+const humidityEl: HTMLParagraphElement = document.getElementById('humidity') as HTMLParagraphElement;
+
+/*
+
+Event Listeners
+
+*/
+
+// Event listener for form submission
+searchForm.addEventListener('submit', (event) => {
+  event.preventDefault();
+  const cityName = searchInput.value.trim();
+  if (cityName) {
+    fetchWeather(cityName);
+    searchInput.value = ''; // Clear the input field after submission
+  }
+});
+
+// Event listener for search history clicks
+searchHistoryContainer.addEventListener('click', (event) => {
+  const target = event.target as HTMLElement;
+  if (target.tagName === 'BUTTON') {
+    const cityName = target.textContent;
+    if (cityName) {
+      fetchWeather(cityName);
+    }
+  }
+});
+
+/*
+
+API Calls
+
+*/
+
+const fetchWeather = async (cityName: string) => {
+  const response = await fetch('/api/weather/', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ cityName }),
+  });
+
+  const weatherData = await response.json();
+
+  console.log('weatherData: ', weatherData);
+
+  renderCurrentWeather(weatherData[0]);
+  renderForecast(weatherData.slice(1));
+};
+
+const fetchSearchHistory = async () => {
+  const history = await fetch('/api/weather/history', {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });import './styles/jass.css';
 
 // * All necessary DOM elements selected
 const searchForm: HTMLFormElement = document.getElementById(
