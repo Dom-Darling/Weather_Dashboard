@@ -430,7 +430,9 @@ const handleSearchFormSubmit = (event: any): void => {
   }
 
   const search: string = searchInput.value.trim();
-  fetchWeather(search).then(() => {
+  console.log('this is the search term: ', search)
+  // this fetches the weather forecast, then fetches the render history
+  fetchWeather(search).then((_response) => {
     getAndRenderHistory();
   });
   searchInput.value = '';
